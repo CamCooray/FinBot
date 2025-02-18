@@ -6,7 +6,7 @@ To address this challenge, I am developing a Financial Advisory Chatbot, a web-b
 # What the Chatbot Does
 The chatbot allows users to ask investment-related questions and receive instant, AI-driven responses powered by GPT-4-turbo. Users can inquire about stock prices, market trends, and investment strategies in a natural, conversational way.
 
-*For example, a user might ask:
-**“What’s the latest price of Tesla (TSLA)?”
-**“Is Apple (AAPL) a good long-term investment?”
-**“What are the key financial metrics for NVIDIA?”
+For example, a user might ask:
+“What’s the latest price of Tesla (TSLA)?”
+“Is Apple (AAPL) a good long-term investment?”
+“What are the key financial metrics for NVIDIA?”
