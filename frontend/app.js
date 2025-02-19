@@ -10,9 +10,9 @@ async function sendMessage() {
     // Clear input field
     document.getElementById("userInput").value = "";
 
-    // Send message to Flask backend
+    // Send message to Flask backend (5000)
     try {
-        const response = await fetch("http://127.0.0.1:5500/frontend/index.html", {
+        const response = await fetch("http://127.0.0.1:5000/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: userInput })
