@@ -7,6 +7,9 @@ const capabilities = [
     "• Investment strategies"
 ];
 
+// Generate a session ID for this conversation
+const sessionId = 'session_' + Math.random().toString(36).substring(2, 15);
+
 // Initialize chat when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     addBotMessage(initialMessage);
@@ -88,7 +91,10 @@ async function processUserMessage(message) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ message: message })
+            body: JSON.stringify({ 
+                message: message,
+                session_id: sessionId  // Pass session ID to maintain conversation context
+            })
         });
 
         if (!response.ok) {
