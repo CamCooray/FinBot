@@ -4,9 +4,12 @@ import os
 import requests
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
-from langchain.agents import initialize_agent, AgentType, Tool
-from langchain.memory import ConversationBufferMemory
-from langchain.prompts import MessagesPlaceholder
+from langchain_core.tools import Tool
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from typing import TypedDict, List, Dict, Any
+from langchain_core.messages import BaseMessage
+from langchain.agents import AgentExecutor, create_tool_calling_agent
 
 # Load environment variables
 load_dotenv()
@@ -19,7 +22,7 @@ CORS(app, resources={r"/chat": {"origins": "http://127.0.0.1:5500"}})
 # Initialize the LLM
 llm = ChatOpenAI(
     model_name="gpt-4o-mini",
-    temperature=0.7
+    temperature=0.5
 )
 
 # Alpha Vantage Stock Tool
@@ -66,10 +69,39 @@ tools = [
 # Dictionary to store conversation sessions
 sessions = {}
 
+def create_finbot_agent(session_id: str):
+    """Create a new FinBot agent with tool-calling capability"""
+    # System message for the agent
+    system_message = """You are FinBot, a helpful financial assistant.
+    If the user is asking about a stock price or stock information, use the StockPrice tool to get real-time data.
+    Always provide brief, concise, and helpful financial context around any stock information."""
+    
+    # Create prompt template
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", system_message),
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("human", "{input}"),
+        MessagesPlaceholder(variable_name="agent_scratchpad"),
+    ])
+    
+    # Create a tool-calling agent (modern replacement for ReAct)
+    agent = create_tool_calling_agent(llm, tools, prompt)
+    
+    # Wrap the agent in an executor (handles tool execution)
+    agent_executor = AgentExecutor(
+        agent=agent,
+        tools=tools,
+        verbose=True,
+        handle_parsing_errors=True
+    )
+    
+    return agent_executor
+
 @app.route("/chat", methods=["POST"])
 def chat():
     try:
         data = request.get_json()
+        print(data)
         user_input = data.get("message")
         session_id = data.get("session_id", "default")
 
@@ -78,31 +110,29 @@ def chat():
             
         # Get or create session
         if session_id not in sessions:
-            # Create a new memory for this session
-            memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-            
             # Create a new agent for this session
-            agent = initialize_agent(
-                tools,
-                llm,
-                agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
-                verbose=True,
-                memory=memory,
-                handle_parsing_errors=True
-            )
-            
-            sessions[session_id] = agent
+            sessions[session_id] = {
+                "agent": create_finbot_agent(session_id),
+                "chat_history": []
+            }
         
-        # Get response from the agent
-        response = sessions[session_id].run(
-            input=f"""
-            As FinBot, a helpful financial assistant, please respond to: {user_input}
-            If the user is asking about a stock price or stock information, use the StockPrice tool to get real-time data.
-            Always provide helpful financial context around any stock information.
-            """
-        )
+        # Get current chat history
+        chat_history = sessions[session_id]["chat_history"]
         
-        return jsonify({"response": response})
+        # Invoke the agent with chat history
+        response = sessions[session_id]["agent"].invoke({
+            "input": user_input,
+            "chat_history": chat_history
+        })
+        
+        # Get the response text
+        response_text = response.get("output", "I couldn't generate a response. Please try again.")
+        
+        # Update chat history
+        sessions[session_id]["chat_history"].append(HumanMessage(content=user_input))
+        sessions[session_id]["chat_history"].append(AIMessage(content=response_text))
+        
+        return jsonify({"response": response_text})
 
     except Exception as e:
         print(f"Backend error: {str(e)}")
