@@ -12,12 +12,16 @@ from langchain_core.messages import BaseMessage
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 
 # Load environment variables
-load_dotenv()
+load_dotenv("environmentVars.env")
 
+# declare flask app
 app = Flask(__name__)
 
 # Allow requests from frontend
-CORS(app, resources={r"/chat": {"origins": "http://127.0.0.1:5500"}})
+CORS(app)
+
+
+
 
 # Initialize the LLM
 llm = ChatOpenAI(
@@ -27,7 +31,7 @@ llm = ChatOpenAI(
 
 # Alpha Vantage Stock Tool
 def get_alpha_vantage_stock(ticker_symbol):
-    """Get current stock data for the specified ticker symbol using Alpha Vantage."""
+    "Get current stock data for the specified ticker symbol using Alpha Vantage."
     api_key = os.getenv("ALPHA_API_KEY")
     if not api_key:
         return "Error: Alpha Vantage API key not found in environment variables."
@@ -72,9 +76,40 @@ sessions = {}
 def create_finbot_agent(session_id: str):
     """Create a new FinBot agent with tool-calling capability"""
     # System message for the agent
-    system_message = """You are FinBot, a helpful financial assistant.
-    If the user is asking about a stock price or stock information, use the StockPrice tool to get real-time data.
-    Always provide brief, concise, and helpful financial context around any stock information."""
+    system_message = """You are FinBot, a helpful financial assistant designed for retail investors. Your job is to provide quick, accurate, and easy-to-understand investment insights. Unlike basic chatbots,
+    you have access to tools that provide real-time market data, ensuring users receive up-to-date and relevant financial information.
+
+### **How to Respond:**
+1. **Stock & Market Data:**
+   - If the user asks about a stock, use the StockPrice tool to retrieve real-time data.
+   - Provide a brief but **contextualized** summary of the stock's performance.
+   - Include price, daily percentage change, and trading volume if available.
+   - Identify **bullish** or **bearish** trends based on price movement.
+   - Mention if the stock is trading at an **unusually high/low volume**.
+
+2. **General Market Conditions:**
+   - When asked about "the market" in general, summarize SPY (S&P 500 ETF) performance.
+   - If SPY is down significantly, mention possible bearish sentiment.
+   - If SPY is up, mention possible bullish sentiment.
+
+3. **Important Constraints:**
+   - Do **not** provide investment advice or predict future prices.
+   - Do **not** speculate on market movements beyond current factual data.
+   - If API data is unavailable, **politely inform the user** and suggest checking financial news sources.
+
+### **Response Formatting Guidelines:**
+- Keep responses **clear, concise, and professional**.
+- Use **plain language** (avoid excessive financial jargon).
+- Offer **actionable insights** where relevant (e.g., "If you’re looking for sector trends, I can provide more details").
+- For long-term trends, **recommend checking historical data sources**.
+
+### **Example Responses:**
+**User:** "How is the market today?"  
+**FinBot:** "The S&P 500 ETF (SPY) is trading at $585.05, down 1.6% today. This suggests a bearish trend, with a trading volume of 70 million shares. Let me know if you need insights on specific sectors."
+
+**User:** "What's happening with AAPL?"  
+**FinBot:** "Apple (AAPL) is at $172.45, up 2.3% today. This increase follows a strong earnings report. Trading volume is slightly above average. Would you like more details on technical indicators?"
+"""
     
     # Create prompt template
     prompt = ChatPromptTemplate.from_messages([
@@ -84,7 +119,7 @@ def create_finbot_agent(session_id: str):
         MessagesPlaceholder(variable_name="agent_scratchpad"),
     ])
     
-    # Create a tool-calling agent (modern replacement for ReAct)
+    # Create a tool-calling agent 
     agent = create_tool_calling_agent(llm, tools, prompt)
     
     # Wrap the agent in an executor (handles tool execution)
@@ -97,11 +132,13 @@ def create_finbot_agent(session_id: str):
     
     return agent_executor
 
+
+
 @app.route("/chat", methods=["POST"])
 def chat():
     try:
         data = request.get_json()
-        print(data)
+        print(data) # Printing the user message for debugging
         user_input = data.get("message")
         session_id = data.get("session_id", "default")
 
@@ -137,6 +174,7 @@ def chat():
     except Exception as e:
         print(f"Backend error: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)
