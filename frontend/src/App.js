@@ -10,26 +10,30 @@ function App() {
   const [isTyping, setIsTyping] = useState(false);
   const [sessionId] = useState('session_' + Math.random().toString(36).substring(2, 15));
   const chatboxRef = useRef(null);
+  const initializedRef = useRef(false);
 
   // Initial messages for the chatbot
   const initialMessage = "Hi! I'm FinBot, your financial assistant. I can help you with:";
   const capabilities = [
     "• Stock market information and trends",
-    "• Financial advice and planning",
+    "• Financial planning",
     "• Market analysis and insights",
     "• Investment strategies"
   ];
 
-  // Initialize chat when the page loads
+  // Initialize chat when the page loads - only once
   useEffect(() => {
-    setMessages(prev => [...prev, { text: initialMessage, sender: 'bot' }]);
-    
-    // Add capabilities with delay for a typing effect
-    capabilities.forEach((capability, index) => {
-      setTimeout(() => {
-        setMessages(prev => [...prev, { text: capability, sender: 'bot' }]);
-      }, 750 * (index + 1));
-    });
+    if (!initializedRef.current) {
+      initializedRef.current = true;
+      setMessages(prev => [...prev, { text: initialMessage, sender: 'bot' }]);
+      
+      // Add capabilities with delay for a typing effect
+      capabilities.forEach((capability, index) => {
+        setTimeout(() => {
+          setMessages(prev => [...prev, { text: capability, sender: 'bot' }]);
+        }, 750 * (index + 1));
+      });
+    }
   }, []);
 
   // Auto-scroll to the bottom when messages update
