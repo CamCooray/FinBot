@@ -5,38 +5,6 @@
 
 @layer base {
   :root {
-    --background: 210 50% 98%;
-    --foreground: 222 47% 11%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-
-    --primary: 210 79% 51%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 174 59% 40%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-
-    --accent: 210 79% 61%;
-    --accent-foreground: 222 47% 11%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 222 47% 11%;
-
-    --radius: 0.5rem;
-  }
-
-  .dark {
     --background: 222 47% 11%;
     --foreground: 210 40% 98%;
 
@@ -73,13 +41,13 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-finance-darkBg text-finance-darkText;
   }
 }
 
 @layer components {
   .chat-container {
-    @apply rounded-xl bg-white shadow-lg p-4 md:p-6 max-w-4xl mx-auto h-[calc(100vh-2rem)] flex flex-col;
+    @apply rounded-xl bg-finance-darkCard shadow-lg p-4 md:p-6 max-w-4xl mx-auto h-[calc(100vh-2rem)] flex flex-col border border-finance-darkBorder;
   }
   
   .chat-messages {
@@ -91,7 +59,7 @@
   }
   
   .bot-message {
-    @apply bg-finance-light text-gray-800 rounded-tl-sm;
+    @apply bg-[#222222] text-gray-100 rounded-tl-sm border border-finance-darkBorder;
   }
   
   .user-message {
@@ -99,6 +67,6 @@
   }
   
   .quick-action-button {
-    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-finance-dark border border-finance-muted hover:bg-finance-light px-3 py-2 shadow-sm;
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-[#222222] text-gray-100 border border-finance-darkBorder hover:bg-[#333333] px-3 py-2 shadow-sm;
   }
 }

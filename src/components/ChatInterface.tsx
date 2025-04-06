@@ -66,7 +66,7 @@ const ChatInterface: React.FC = () => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="flex-1"
+            className="flex-1 bg-[#222222] border-finance-darkBorder text-gray-100 placeholder:text-gray-400"
           />
           <Button 
             onClick={handleSendMessage} 
@@ -76,7 +76,7 @@ const ChatInterface: React.FC = () => {
           </Button>
         </div>
         
-        <p className="text-xs text-gray-500 mt-2 text-center">
+        <p className="text-xs text-gray-400 mt-2 text-center">
           This is an educational tool. Do not make investment decisions based solely on this information.
         </p>
       </div>

@@ -73,6 +73,10 @@ export default {
 					success: '#66BB6A',
 					warning: '#FFA726',
 					danger: '#EF5350',
+					darkBg: '#1A1F2C',
+					darkCard: '#222222',
+					darkText: '#E0E0E0',
+					darkBorder: '#333333',
 				}
 			},
 			borderRadius: {
