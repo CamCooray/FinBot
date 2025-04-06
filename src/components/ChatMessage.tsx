@@ -15,12 +15,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       <div className={cn(
         'message-bubble',
         isBot ? 'bot-message' : 'user-message',
-        'shadow-sm'
+        'max-w-[80%]'
       )}>
         <p className="whitespace-pre-line">{message.text}</p>
-        <p className="text-xs opacity-60 text-right mt-1.5">
-          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-        </p>
       </div>
     </div>
   );

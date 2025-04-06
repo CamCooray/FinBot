@@ -14,16 +14,16 @@
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 79% 51%;
+    --primary: 214 100% 50%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 174 59% 40%;
+    --secondary: 217 33% 18%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217 33% 18%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 210 79% 61%;
+    --accent: 214 100% 50%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 63% 31%;
@@ -41,32 +41,52 @@
   }
 
   body {
-    @apply bg-finance-darkBg text-finance-darkText;
+    @apply bg-[#0F1424] text-gray-100;
   }
 }
 
 @layer components {
   .chat-container {
-    @apply rounded-xl bg-finance-darkCard shadow-md p-4 md:p-5 max-w-3xl mx-auto h-[calc(100vh-2rem)] flex flex-col border border-[#333333];
+    @apply flex flex-col h-[500px] md:h-[600px];
   }
   
   .chat-messages {
-    @apply flex-1 overflow-y-auto space-y-2 md:space-y-3;
+    @apply flex-1 overflow-y-auto space-y-2 md:space-y-3 scrollbar-none;
   }
   
   .message-bubble {
-    @apply px-4 py-3 rounded-2xl max-w-[85%];
+    @apply px-4 py-3 rounded-2xl;
   }
   
   .bot-message {
-    @apply bg-[#1E2736] text-gray-100 rounded-tl-sm border border-[#333333];
+    @apply bg-[#1E2736] text-gray-100 rounded-tl-sm;
   }
   
   .user-message {
-    @apply bg-finance-primary/90 text-white ml-auto rounded-tr-sm;
+    @apply bg-blue-600 text-white ml-auto rounded-tr-sm;
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
   
-  .quick-action-button {
-    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-[#1E2736] text-gray-200 border border-[#333333] hover:bg-[#2A3446] hover:border-[#444444] px-3 py-1.5 shadow-sm;
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
