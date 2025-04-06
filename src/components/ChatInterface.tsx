@@ -39,7 +39,7 @@ const ChatInterface: React.FC = () => {
     <div className="chat-container">
       <Header />
       
-      <div className="chat-messages">
+      <div className="chat-messages px-1 py-2">
         {messages.map((message) => (
           <ChatMessage key={message.id} message={message} />
         ))}
@@ -57,26 +57,27 @@ const ChatInterface: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
       
-      <div className="mt-4">
+      <div className="mt-4 bg-[#1A1F2C] p-3 rounded-lg border border-[#333333]">
         <QuickActionButtons onActionClick={handleQuickAction} />
         
-        <div className="flex space-x-2 mt-2">
+        <div className="flex space-x-2 mt-3">
           <Input
             placeholder="Ask a question about investing..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="flex-1 bg-[#222222] border-finance-darkBorder text-gray-100 placeholder:text-gray-400"
+            className="flex-1 bg-[#222222] border-[#444444] text-gray-100 placeholder:text-gray-500 focus:border-finance-primary focus:ring-1 focus:ring-finance-primary"
           />
           <Button 
             onClick={handleSendMessage} 
-            className="bg-finance-primary hover:bg-finance-dark"
+            className="bg-finance-primary hover:bg-finance-dark text-white"
+            size="icon"
           >
             <Send className="h-4 w-4" />
           </Button>
         </div>
         
-        <p className="text-xs text-gray-400 mt-2 text-center">
+        <p className="text-xs text-gray-500 mt-3 text-center">
           This is an educational tool. Do not make investment decisions based solely on this information.
         </p>
       </div>
