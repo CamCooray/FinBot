@@ -4,6 +4,7 @@ import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ChatMessage from './ChatMessage';
+import TypingIndicator from './TypingIndicator';
 import Header from './Header';
 import { useChatbot } from '@/hooks/useChatbot';
 import { initialMessages } from '@/data/chatData';
@@ -27,7 +28,7 @@ const ChatInterface: React.FC = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isTyping]);
 
   useEffect(() => {
     if (messages.length > 1) {
@@ -39,6 +40,11 @@ const ChatInterface: React.FC = () => {
     if (e.key === 'Enter') {
       handleSendMessage();
     }
+  };
+
+  const handleChoiceSelection = (choiceText: string) => {
+    setInputValue(choiceText);
+    setTimeout(() => handleSendMessage(), 100);
   };
 
   return (
@@ -63,21 +69,15 @@ const ChatInterface: React.FC = () => {
             </div>
           ) : (
             messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
+              <ChatMessage 
+                key={message.id} 
+                message={message}
+                onSelectChoice={message.sender === 'bot' ? handleChoiceSelection : undefined}
+              />
             ))
           )}
           
-          {isTyping && (
-            <div className="flex justify-start animate-fade-in">
-              <div className="message-bubble bot-message">
-                <div className="flex space-x-2">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-                  <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse delay-150"></div>
-                  <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse delay-300"></div>
-                </div>
-              </div>
-            </div>
-          )}
+          {isTyping && <TypingIndicator />}
           <div ref={messagesEndRef} />
         </div>
         

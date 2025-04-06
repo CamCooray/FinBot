@@ -4,6 +4,7 @@ export interface ChatMessage {
   sender: 'bot' | 'user';
   text: string;
   timestamp: Date;
+  choices?: { id: string; text: string }[];
 }
 
 export interface QuickAction {
@@ -18,6 +19,11 @@ export const initialMessages: ChatMessage[] = [
     sender: 'bot',
     text: 'Hello! I\'m your financial education assistant, here to help you learn about investing. What would you like to know about today?',
     timestamp: new Date(),
+    choices: [
+      { id: 'stocks-intro', text: 'Explain stocks to a beginner' },
+      { id: 'invest-start', text: 'How to start investing with $1000?' },
+      { id: 'risk-explain', text: 'What are investment risks?' }
+    ]
   },
 ];
 
