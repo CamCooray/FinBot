@@ -17,10 +17,16 @@ const ChatInterface: React.FC = () => {
     handleSendMessage,
     handleQuickAction,
     isTyping,
+    configureApi,
   } = useChatbot(initialMessages);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showWelcome, setShowWelcome] = useState(true);
+
+  // Only show choices for the first bot message
+  const shouldShowChoices = (messageId: string) => {
+    return messageId === initialMessages[0].id;
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -35,6 +41,17 @@ const ChatInterface: React.FC = () => {
       setShowWelcome(false);
     }
   }, [messages]);
+
+  // Example of how to set up API connection (not called yet - would be called when configuring the bot)
+  const setupBackendConnection = () => {
+    configureApi({
+      baseUrl: 'https://your-backend-api.com',
+      apiKey: 'your-api-key',
+      headers: {
+        'X-Client-Version': '1.0.0',
+      },
+    });
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -73,6 +90,7 @@ const ChatInterface: React.FC = () => {
                 key={message.id} 
                 message={message}
                 onSelectChoice={message.sender === 'bot' ? handleChoiceSelection : undefined}
+                showChoices={shouldShowChoices(message.id)}
               />
             ))
           )}

@@ -9,13 +9,15 @@ interface Choice {
 interface RecommendedChoicesProps {
   choices: Choice[];
   onSelectChoice: (choice: string) => void;
+  showChoices: boolean;
 }
 
 const RecommendedChoices: React.FC<RecommendedChoicesProps> = ({ 
   choices, 
-  onSelectChoice 
+  onSelectChoice,
+  showChoices
 }) => {
-  if (!choices || choices.length === 0) return null;
+  if (!choices || choices.length === 0 || !showChoices) return null;
   
   return (
     <div className="mt-3 mb-2 flex flex-wrap gap-2 animate-fade-in">

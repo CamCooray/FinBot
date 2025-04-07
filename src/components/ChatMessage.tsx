@@ -7,6 +7,7 @@ import RecommendedChoices from './RecommendedChoices';
 interface ChatMessageProps {
   message: ChatMessageType;
   onSelectChoice?: (choice: string) => void;
+  showChoices: boolean;
 }
 
 const defaultChoices = [
@@ -15,7 +16,7 @@ const defaultChoices = [
   { id: 'retirement', text: 'Retirement planning tips' },
 ];
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ message, onSelectChoice }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({ message, onSelectChoice, showChoices }) => {
   const isBot = message.sender === 'bot';
   
   return (
@@ -32,6 +33,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onSelectChoice }) =>
         <RecommendedChoices 
           choices={message.choices || defaultChoices}
           onSelectChoice={onSelectChoice}
+          showChoices={showChoices}
         />
       )}
     </div>
