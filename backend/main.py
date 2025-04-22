@@ -18,7 +18,8 @@ load_dotenv("environmentVars.env")
 app = Flask(__name__)
 
 # Allow requests from frontend
-CORS(app, resources={r"/chat": {"origins": "http://localhost:8081"}})
+CORS(app, resources={r"/chat": {"origins": "https://savvy-start-finance-chat-gs1i.vercel.app"}})
+
 
 
 
