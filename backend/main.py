@@ -17,9 +17,12 @@ load_dotenv("environmentVars.env")
 # declare flask app
 app = Flask(__name__)
 
-# Allow requests from frontend
-CORS(app, resources={r"/chat": {"origins": "https://savvy-start-finance-chat-gs1i.vercel.app"}}, supports_credentials=True)
 
+CORS(app,
+     origins=["https://savvy-start-finance-chat-gs1i.vercel.app"],
+     methods=["GET", "POST", "OPTIONS"],
+     allow_headers=["Content-Type"],
+     supports_credentials=True)
 
 
 
