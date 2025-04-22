@@ -39,6 +39,7 @@ const Index: React.FC = () => {
         headers: {
           'Content-Type': 'application/json'
         },
+        mode: 'cors',
         body: JSON.stringify({
           message: userMessage,
           session_id: sessionId

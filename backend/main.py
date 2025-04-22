@@ -20,7 +20,7 @@ app = Flask(__name__)
 
 CORS(app,
      origins=["https://savvy-start-finance-chat-gs1i.vercel.app",
-              "coorayfinbot.vercel.app",
+              "https://coorayfinbot.vercel.app",
               "savvy-start-finance-chat-gs1i-camcoorays-projects.vercel.app",
               "savvy-start-finance-chat-gs1i-git-main-camcoorays-projects.vercel.app"],
      methods=["GET", "POST", "OPTIONS"],
