@@ -34,7 +34,7 @@ const Index: React.FC = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch('http://localhost:5001/chat', {
+      const response = await fetch('https://finbot-k5bl.onrender.com', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
