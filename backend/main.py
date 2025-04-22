@@ -22,7 +22,9 @@ CORS(app,
      origins=["https://savvy-start-finance-chat-gs1i.vercel.app"],
      methods=["GET", "POST", "OPTIONS"],
      allow_headers=["Content-Type"],
-     supports_credentials=True)
+     supports_credentials=True,
+     always_send=True)  # 👈 THIS LINE IS CRITICAL
+
 
 
 
