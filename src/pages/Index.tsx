@@ -8,7 +8,7 @@ const Index: React.FC = () => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
-  // Create a session ID once and persist it
+  // Create a session ID once
   const [sessionId] = useState(() => {
     const stored = localStorage.getItem('finbot_session');
     if (stored) return stored;
@@ -17,7 +17,7 @@ const Index: React.FC = () => {
     return newId;
   });
 
-  // Handles sending message to backend
+  //Handles input response to backend
   const handleSend = async () => {
     const userMessage = input.trim();
     if (!userMessage) return;
@@ -98,8 +98,9 @@ const Index: React.FC = () => {
           </p>
         </div>
 
-        {/* Chat Interface */}
-        <div className="flex-1 glass-panel rounded-2xl shadow-medium border border-gray-700/50 overflow-hidden flex flex-col animate-fade-in">
+        {/* Chat interface */}
+        <div className="flex-1 bg-[#121926] rounded-2xl shadow-medium border border-gray-700/50 overflow-hidden flex flex-col animate-fade-in">
+
           <ChatInterface
             messages={messages}
             input={input}
@@ -112,7 +113,9 @@ const Index: React.FC = () => {
 
       {/* Footer */}
       <footer className="w-full py-4 border-t border-gray-700 mt-auto px-4 text-center">
-        <p className="text-sm text-gray-400">FinBot — Your AI Financial Assistant</p>
+        <p className="text-sm text-gray-400">
+          FinBot — Your AI Financial Assistant
+        </p>
       </footer>
     </div>
   );
