@@ -34,7 +34,7 @@ const Index: React.FC = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch('/api/proxy', {
+      const response = await fetch('https://finbot-k5bl.onrender.com/proxy', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -209,6 +209,13 @@ def create_finbot_agent(session_id: str):
     
     return agent_executor
 
+@app.route("/proxy", methods=["POST"])
+def proxy():
+    try:
+        response = requests.post("https://finbot-k5bl.onrender.com/chat", json=request.json)
+        return jsonify(response.json())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/chat", methods=["POST", "OPTIONS"])
 def chat():
