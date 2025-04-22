@@ -34,7 +34,7 @@ const Index: React.FC = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch('/api/proxy', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
