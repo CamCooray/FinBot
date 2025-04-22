@@ -18,11 +18,8 @@ load_dotenv("environmentVars.env")
 app = Flask(__name__)
 
 # Allow requests from frontend
-CORS(app,
-     origins=["savvy-start-finance-chat-gs1i.vercel.app"],
-     methods=["GET", "POST", "OPTIONS"],
-     allow_headers=["Content-Type"],
-     supports_credentials=True)
+CORS(app, resources={r"/chat": {"origins": "https://savvy-start-finance-chat-gs1i.vercel.app"}}, supports_credentials=True)
+
 
 
 
@@ -206,8 +203,10 @@ def create_finbot_agent(session_id: str):
 
 
 
-@app.route("/chat", methods=["POST"])
+@app.route("/chat", methods=["POST", "OPTIONS"])
 def chat():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'CORS preflight passed'}), 200
     try:
         data = request.get_json()
         print(data) # Printing the user message for debugging
