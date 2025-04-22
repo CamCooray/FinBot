@@ -18,15 +18,8 @@ load_dotenv("environmentVars.env")
 app = Flask(__name__)
 
 
-CORS(app,
-     origins=["https://savvy-start-finance-chat-gs1i.vercel.app",
-              "https://coorayfinbot.vercel.app",
-              "savvy-start-finance-chat-gs1i-camcoorays-projects.vercel.app",
-              "savvy-start-finance-chat-gs1i-git-main-camcoorays-projects.vercel.app"],
-     methods=["GET", "POST", "OPTIONS"],
-     allow_headers=["Content-Type"],
-     supports_credentials=True,
-     always_send=True)
+CORS(app)
+
 
 
 
