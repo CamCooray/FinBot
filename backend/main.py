@@ -19,7 +19,7 @@ app = Flask(__name__)
 
 # Allow requests from frontend
 CORS(app,
-     origins=["https://savvy-start-finance-chat-gs1i.vercel.app"],
+     origins=["savvy-start-finance-chat-gs1i.vercel.app"],
      methods=["GET", "POST", "OPTIONS"],
      allow_headers=["Content-Type"],
      supports_credentials=True)
