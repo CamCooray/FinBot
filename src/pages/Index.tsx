@@ -121,5 +121,5 @@ const Index: React.FC = () => {
     </div>
   );
 };
-
+console.log("Frontend Origin:", window.location.origin);
 export default Index;
