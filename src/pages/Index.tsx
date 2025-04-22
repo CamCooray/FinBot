@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ChatInterface from '@/components/ChatInterface';
 import { Message } from '@/lib/chatUtils';
 import { v4 as uuidv4 } from 'uuid';
+import { Analytics } from "@vercel/analytics/react"
 
 const Index: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);

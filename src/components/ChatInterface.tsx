@@ -3,6 +3,7 @@ import ChatMessage from './ChatMessage';
 import TypingIndicator from './TypingIndicator';
 import { SendIcon } from 'lucide-react';
 import { Message } from '@/lib/chatUtils';
+import { Analytics } from "@vercel/analytics/react"
 
 interface ChatInterfaceProps {
   messages: Message[];
