@@ -209,6 +209,7 @@ def create_finbot_agent(session_id: str):
     
     return agent_executor
 
+
 @app.route("/proxy", methods=["POST"])
 def proxy():
     try:
@@ -216,6 +217,11 @@ def proxy():
         return jsonify(response.json())
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "up"})
+
 
 @app.route("/chat", methods=["POST", "OPTIONS"])
 def chat():
