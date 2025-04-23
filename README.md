@@ -1,5 +1,5 @@
 # FinBot
-# Financial Education Chatbot
+Financial Education Chatbot
 
 https://yourfinbot.vercel.app/
 
