@@ -1,4 +1,4 @@
-Financial Advisory Chatbot for Retail Investors
+**Financial Advisory Chatbot for Retail Investors**
 Cameron Cooray
 Introduction
 Investing in the stock market can be overwhelming, especially for novice investors who struggle to navigate financial jargon, track stock performance, and make informed decisions. Many retail investors turn to online research, social media, or financial news for guidance, but these sources can be inconsistent, confusing, or even misleading.
