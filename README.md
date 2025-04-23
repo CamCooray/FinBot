@@ -1,4 +1,5 @@
-# Financial Advisory Chatbot for Retail Investors
+# FinBot
+# Financial Education Chatbot
 
 https://yourfinbot.vercel.app/
 
