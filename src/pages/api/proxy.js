@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  const targetUrl = 'https://finbot-k5bl.onrender.com/chat';
+  const targetUrl = 'http://localhost:5001/chat';
 
   try {
     const response = await fetch(targetUrl, {

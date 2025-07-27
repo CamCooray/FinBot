@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ChatInterface from '@/components/ChatInterface';
 import { Message } from '@/lib/chatUtils';
 import { v4 as uuidv4 } from 'uuid';
 import { Analytics } from "@vercel/analytics/react"
+import { getAvailableApiConfig, ApiConfig } from '@/lib/apiConfig';
 
 const Index: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [apiConfig, setApiConfig] = useState<ApiConfig | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'fallback' | 'offline'>('connecting');
 
   // Create a session ID once
   const [sessionId] = useState(() => {
@@ -18,10 +21,44 @@ const Index: React.FC = () => {
     return newId;
   });
 
+  // Initialize API configuration on component mount
+  useEffect(() => {
+    const initializeApi = async () => {
+      try {
+        const config = await getAvailableApiConfig();
+        setApiConfig(config);
+        setConnectionStatus('connected');
+        
+        // Show a welcome message with connection info
+        const welcomeMessage: Message = {
+          id: crypto.randomUUID(),
+          text: `Welcome to FinBot, I'm connected and ready to help you with financial insights👋`,
+          type: 'bot',
+          timestamp: new Date(),
+        };
+        setMessages([welcomeMessage]);
+      } catch (error) {
+        console.error('Failed to initialize API:', error);
+        setConnectionStatus('offline');
+        
+        // Show offline message
+        const offlineMessage: Message = {
+          id: crypto.randomUUID(),
+          text: `⚠️ I'm currently running in offline mode. Some features may be limited. Please check your connection or try again later.`,
+          type: 'bot',
+          timestamp: new Date(),
+        };
+        setMessages([offlineMessage]);
+      }
+    };
+
+    initializeApi();
+  }, []);
+
   //Handles input response to backend
   const handleSend = async () => {
     const userMessage = input.trim();
-    if (!userMessage) return;
+    if (!userMessage || !apiConfig) return;
 
     const userMsgObj: Message = {
       id: crypto.randomUUID(),
@@ -35,17 +72,27 @@ const Index: React.FC = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch('https://finbot-k5bl.onrender.com/chat', {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), apiConfig.timeout);
+
+      const response = await fetch(`${apiConfig.baseUrl}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         mode: 'cors',
+        signal: controller.signal,
         body: JSON.stringify({
           message: userMessage,
           session_id: sessionId
         })
       });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const data = await response.json();
 
@@ -59,11 +106,20 @@ const Index: React.FC = () => {
       setMessages((prev) => [...prev, botMsgObj]);
     } catch (error) {
       console.error('Backend error:', error);
+      
+      let errorMessage = 'Sorry, something went wrong.';
+      
+      if (error.name === 'AbortError') {
+        errorMessage = `⏱️ Request timed out. The ${apiConfig.baseUrl.includes('localhost') ? 'local server' : 'cloud server'} might be slow or unavailable.`;
+      } else if (error.message.includes('Failed to fetch')) {
+        errorMessage = `🔌 Connection failed. Please check if the ${apiConfig.baseUrl.includes('localhost') ? 'local server is running' : 'internet connection is stable'}.`;
+      }
+      
       setMessages((prev) => [
         ...prev,
         {
           id: crypto.randomUUID(),
-          text: 'Sorry, something went wrong.',
+          text: errorMessage,
           type: 'bot',
           timestamp: new Date(),
         }
@@ -72,6 +128,51 @@ const Index: React.FC = () => {
       setIsTyping(false);
     }
   };
+
+  // Helper function to manually switch API endpoints
+  const switchApiEndpoint = async (environment: 'development' | 'production') => {
+    setConnectionStatus('connecting');
+    localStorage.setItem('finbot_api_override', environment);
+    
+    try {
+      const config = await getAvailableApiConfig();
+      setApiConfig(config);
+      setConnectionStatus('connected');
+      
+      const switchMessage: Message = {
+        id: crypto.randomUUID(),
+        text: `🔄 Switched to ${environment === 'development' ? 'Local' : 'Cloud'} server: ${config.baseUrl}`,
+        type: 'bot',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, switchMessage]);
+    } catch (error) {
+      setConnectionStatus('offline');
+      console.error('Failed to switch API:', error);
+    }
+  };
+
+  // Function to get connection status color and text
+  const getConnectionStatus = () => {
+    switch (connectionStatus) {
+      case 'connecting':
+        return { color: 'text-yellow-400', text: 'Connecting...', dot: 'bg-yellow-400' };
+      case 'connected':
+        return { 
+          color: 'text-green-400', 
+          text: apiConfig?.baseUrl.includes('localhost') ? 'Local Server' : 'Cloud Server', 
+          dot: 'bg-green-400' 
+        };
+      case 'fallback':
+        return { color: 'text-orange-400', text: 'Fallback Mode', dot: 'bg-orange-400' };
+      case 'offline':
+        return { color: 'text-red-400', text: 'Offline Mode', dot: 'bg-red-400' };
+      default:
+        return { color: 'text-gray-400', text: 'Unknown', dot: 'bg-gray-400' };
+    }
+  };
+
+  const statusInfo = getConnectionStatus();
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-800">
@@ -82,11 +183,17 @@ const Index: React.FC = () => {
             <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-md">
               <span className="text-white font-bold text-lg">F</span>
             </div>
-            <h1 className="text-2xl font-semibold tracking-tight">
-              <span className="finbot-gradient-text">Fin</span>Bot
-            </h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-white">FinBot</h1>
           </div>
-          <p className="text-sm text-gray-400 hidden sm:block">Your Personal Finance Assistant</p>
+          
+          {/* Connection Status & API Controls */}
+          <div className="flex items-center space-x-4">
+            {/* Connection Status */}
+            <div className="flex items-center space-x-2">
+              <div className={`w-2 h-2 rounded-full ${statusInfo.dot} animate-pulse`}></div>
+              <span className={`text-sm ${statusInfo.color} hidden sm:inline`}>{statusInfo.text}</span>
+            </div>
+          </div>
         </div>
       </header>
 

@@ -26,8 +26,8 @@ export const initialMessages: Message[] = [
 // API function to get responses from the Flask backend
 export const getResponse = async (userMessage: string): Promise<string> => {
   try {
-    // Flask backend URL
-    const apiUrl = "https://finbot-k5bl.onrender.com/chat";
+    // Local Flask backend URL
+    const apiUrl = "http://localhost:5001/chat";
     
     const response = await fetch(apiUrl, {
       method: "POST",
